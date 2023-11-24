@@ -10,6 +10,14 @@ class Game:
         self.clock = pygame.time.Clock()
         self.running = True
 
+    def createTilemap(self):
+        for i, row in enumerate(tilemap):
+            for j, column in enumerate(row):
+                if column == "B":
+                    Block(self, j, i)
+                if column == "P":
+                    Player(self, j, i)
+
     def new(self):
         #При запуске игры
         self.playing = True
@@ -19,7 +27,8 @@ class Game:
         self.enemies = pygame.sprite.LayeredUpdates()
         self.attacks = pygame.sprite.LayeredUpdates()
 
-        self.player = Player(self, 1, 2)
+        self.createTilemap()
+
     def events(self):
         # game loop events
         for event in pygame.event.get():
