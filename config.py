@@ -10,6 +10,7 @@ BLOCK_LAYER = 1
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
+WHITE = (255, 255, 255)
 
 tilemap = [
     'BBBBBBBBBBBBBBBBBBBB',
