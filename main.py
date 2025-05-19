@@ -4,6 +4,27 @@ from config import *
 import sys
 import os
 
+class Camera:
+    def __init__(self, width, height):
+        self.camera = pygame.Rect(0, 0, width, height)
+        self.width = width
+        self.height = height
+        
+    def apply(self, entity):
+        return entity.rect.move(self.camera.topleft)
+        
+    def update(self, target):
+        x = -target.rect.x + int(WIN_WIDTH / 2)
+        y = -target.rect.y + int(WIN_HEIGHT / 2)
+        
+        # Limit scrolling to game map size
+        # x = min(0, x)  # left
+        # y = min(0, y)  # top
+        # x = max(-(self.width - WIN_WIDTH), x)  # right
+        # y = max(-(self.height - WIN_HEIGHT), y)  # bottom
+        
+        self.camera = pygame.Rect(x, y, self.width, self.height)
+
 class Game:
     #запуск текстур и шрифта
     def __init__(self):
@@ -45,6 +66,12 @@ class Game:
         self.attacks = pygame.sprite.LayeredUpdates()
 
         self.createTilemap()
+        
+        # Initialize camera with the size of your game world
+        # For now using a large size, adjust based on your tilemap dimensions
+        map_width = len(tilemap[0]) * TILESIZE
+        map_height = len(tilemap) * TILESIZE
+        self.camera = Camera(map_width, map_height)
 
     def events(self):
         # game loop events
@@ -71,7 +98,14 @@ class Game:
     def draw(self):
         #game loop draw
         self.screen.fill(BLACK)
-        self.all_sprites.draw(self.screen)
+        
+        # Update camera position to follow player
+        self.camera.update(self.player)
+        
+        # Draw all sprites with camera offset
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
+            
         self.clock.tick(FPS)
         pygame.display.update()
 
